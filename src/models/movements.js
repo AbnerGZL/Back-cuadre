@@ -17,14 +17,18 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    commition: {
+    comition: {
       type: DataTypes.DECIMAL(10,2),
       defaultValue: 0
     },
     date: {
       type: DataTypes.DATE,
       allowNull: true
-    }
+    },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    }    
   }, {
     tableName: 'movements',
     timestamps: true,

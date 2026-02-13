@@ -22,8 +22,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use('/movements', movementsRoutes);
-app.use('/cashbox', cashboxRoutes);
+app.use('/api/movements', movementsRoutes);
+app.use('/api/cashbox', cashboxRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet());

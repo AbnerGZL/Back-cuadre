@@ -1,6 +1,7 @@
 import { where } from "sequelize";
 import bcrypt from "bcryptjs";
 import { models } from "../models/index.js";
+import place from "../models/place.js";
 /**
  * This object contains controller functions for managing movements operations.
  * @module controllers/movement.controller.js
@@ -11,12 +12,38 @@ import { models } from "../models/index.js";
 const list = async (req, res) => {
   try {
     const { Movements } = models;
+    const { type, date, user, place, description, comition } = req.query;
     const content = await Movements.findAll(
       {
+      where: {
+        status: 1,
+        date: date,
+        ...(type && { type }),
+        ...(description && { description }),
+        ...(comition && { commition })
+      },        
         include: [
           {
             model: models.MovementData,
-        }]        
+            where: {
+              place: place,
+              ...(user && { id_user: user })
+            },
+            include: [
+              {
+                model: models.Users,
+                field: ["name"]
+              },
+              {
+                model: models.Place,
+                field: ["nameplace"]
+              },
+              {
+                model: models.Agents,
+                field: ["name"]
+              }
+            ]
+        }]
       }
     );
 
@@ -39,6 +66,20 @@ const getForId = async (req, res) => {
       include: [
         {
           model: models.MovementData,
+          include: [
+            {
+              model: models.Users,
+              field: ["name"]
+            },
+            {
+              model: models.Place,
+              field: ["nameplace"]
+            },
+            {
+              model: models.Agents,
+              field: ["name"]
+            }
+          ]
       }]
     });
 
@@ -58,11 +99,13 @@ const create = async (req, res) => {
     const { Movements } = models;
     const { MovementData } = models;
     const bodyMovement = {
+        id_cashbox: req.body.id_cashbox,
         type: req.body.type,
         quantity: req.body.quantity,
         description: req.body.description,
         commition: req.body.commition,
-        date: req.body.date
+        date: req.body.date,
+        status: 1
     }
     const content = await Movements.create(bodyMovement);
 
@@ -70,7 +113,8 @@ const create = async (req, res) => {
         id_user: req.body.id_user,
         id_movement: content.id_movement,
         id_agents: req.body.id_agents,
-        id_floor: req.body.id_floor,
+        id_place: req.body.id_place,
+        status: 1
     }        
     const contentData = await MovementData.create(bodyData);
 
@@ -96,14 +140,14 @@ const edit = async (req, res) => {
         quantity: req.body.quantity,
         description: req.body.description,
         commition: req.body.commition,
-        date: req.body.date
+        date: req.body.date,
+        status: 1
     }
 
     const bodyData = {
         id_user: req.body.id_user,
-        id_movement: id,
         id_agents: req.body.id_agents,
-        id_floor: req.body.id_floor,
+        status: 1,
     }        
     await MovementData.update(bodyData, {
       where: { id_movement: id }
@@ -130,7 +174,7 @@ const deleteMovement = async (req, res) => {
     const { id } = req.params;
     await MovementData.destroy({
       where: { id_movement: id }
-    });    
+    });
     const content = await Movements.destroy({
       where: { id_movement: id }
     });

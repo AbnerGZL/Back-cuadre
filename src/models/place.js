@@ -9,6 +9,10 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING(60),
       allowNull: false,
     },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     numfloors: {
       type: DataTypes.INTEGER,
       allowNull: false,

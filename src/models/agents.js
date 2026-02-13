@@ -8,6 +8,10 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING(70),
       allowNull: false,
+    },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     }
   }, {
     tableName: 'agents',

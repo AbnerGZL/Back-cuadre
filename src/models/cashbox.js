@@ -8,23 +8,19 @@ export default (sequelize, DataTypes) => {
     id_place: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
     },    
-    status: {
+    state: {
       type: DataTypes.STRING(45),
       allowNull: false,
     },
-    date: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    value: {
+    status: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    quantity: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    }
   }, {
     tableName: 'cashbox',
     timestamps: true,
