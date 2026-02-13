@@ -1,0 +1,36 @@
+export default (sequelize, DataTypes) => {
+  const Movements = sequelize.define('movements', {
+    id_movement: {
+      type: DataTypes.INTEGER,
+      primaryKey: true, 
+      autoIncrement: true
+    },
+    type: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
+    quantity: {
+      type: DataTypes.DECIMAL(20,2),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    commition: {
+      type: DataTypes.DECIMAL(10,2),
+      defaultValue: 0
+    },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: true
+    }
+  }, {
+    tableName: 'movements',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  });
+
+  return Movements;
+};
