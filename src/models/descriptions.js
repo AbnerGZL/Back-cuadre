@@ -1,6 +1,6 @@
 export default (sequelize, DataTypes) => {
-  const Cashbox = sequelize.define('cashbox', {
-    id_cashbox: {
+  const Descriptions = sequelize.define('descriptions', {
+    id_description: {
       type: DataTypes.INTEGER,
       primaryKey: true, 
       autoIncrement: true
@@ -9,25 +9,20 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    date: {
-      type: DataTypes.DATE,
+    text: {
+      type: DataTypes.STRING(255),
       allowNull: false,
-    },
-    // state: "OPEN" | "CLOSED"
-    state: {
-      type: DataTypes.ENUM('OPEN', 'CLOSED'),
-      allowNull: false,
-    },
-    status: {
+    },    
+    link: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
+    }
   }, {
-    tableName: 'cashbox',
+    tableName: 'descriptions',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   });
 
-  return Cashbox;
+  return Descriptions;
 };

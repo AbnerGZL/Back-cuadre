@@ -11,7 +11,7 @@ import { models } from "../models/index.js";
 const list = async (req, res) => {
   try {
     const { Movements } = models;
-    const { type, cashbox, user, place, description, comition } = req.query;
+    const { type, cashbox, user, description, comition } = req.query;
     const content = await Movements.findAll(
       {
       where: {
@@ -25,7 +25,6 @@ const list = async (req, res) => {
           {
             model: models.MovementData,
             where: {
-              place: place,
               ...(user && { id_user: user })
             },
             include: [
@@ -97,8 +96,19 @@ const create = async (req, res) => {
   try {
     const { Movements } = models;
     const { MovementData } = models;
+    const { id_cashbox } = req.body;
+
+    if (!id_cashbox) {
+      return res.status(400).json({ message: "id_cashbox is required" });
+    }
+
+    const cashbox = await models.Cashbox.findByPk(id_cashbox);
+    if (cashbox.state == "CLOSED") {
+      return res.status(404).json({ message: "Cashbox is closed" });
+    }
+
     const bodyMovement = {
-        id_cashbox: req.body.id_cashbox,
+        id_cashbox: id_cashbox,
         type: req.body.type,
         quantity: req.body.quantity,
         description: req.body.description,

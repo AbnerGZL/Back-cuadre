@@ -10,6 +10,7 @@ import definePlace from './place.js';
 import defineCashbox from './cashbox.js';
 import defineAccounting from './accounting.js';
 import defineMovementData from './movementData.js';
+import defineDescriptions from './descriptions.js';
 
 
 const models = {
@@ -22,6 +23,7 @@ const models = {
   Cashbox: defineCashbox(sequelize, DataTypes),
   MovementData: defineMovementData(sequelize, DataTypes),
   Accounting: defineAccounting(sequelize, DataTypes),
+  Descriptions: defineDescriptions(sequelize, DataTypes),
 };
 
 Object.values(models).forEach(model => {
@@ -53,6 +55,9 @@ models.MovementData.belongsTo(models.Movements, { foreignKey: 'id_movement' });
 
 models.Users.hasMany(models.MovementData, { foreignKey: 'id_user' });
 models.MovementData.belongsTo(models.Users, { foreignKey: 'id_user' });
+
+models.Place.hasMany(models.Descriptions, { foreignKey: 'id_place' });
+models.Descriptions.belongsTo(models.Place, { foreignKey: 'id_place' });
 
 export {
   sequelize,

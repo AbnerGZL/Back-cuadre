@@ -28,7 +28,7 @@ const getOne = async (req, res) => {
   try {
     const { Cashbox } = models;
     const { date, id, state } = req.query;
-    const content = await Cashbox.findAll({
+    const content = await Cashbox.findOne({
       where: {
         status: 1,
         date: date,

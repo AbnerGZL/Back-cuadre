@@ -9,8 +9,9 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    // type: "CASH" | "PACKAGE" | "VOUCHER"
     type: {
-      type: DataTypes.STRING(45),
+      type: DataTypes.ENUM('CASH', 'PACKAGE','VOUCHER'),
       allowNull: false,
     },
     time: {

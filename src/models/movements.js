@@ -5,8 +5,9 @@ export default (sequelize, DataTypes) => {
       primaryKey: true, 
       autoIncrement: true
     },
+    // type: "ENTRY" | "EXIT"
     type: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.ENUM('ENTRY', 'EXIT'),
       allowNull: false,
     },
     quantity: {
