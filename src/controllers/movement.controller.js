@@ -1,7 +1,6 @@
 import { where } from "sequelize";
 import bcrypt from "bcryptjs";
 import { models } from "../models/index.js";
-import place from "../models/place.js";
 /**
  * This object contains controller functions for managing movements operations.
  * @module controllers/movement.controller.js
@@ -12,12 +11,12 @@ import place from "../models/place.js";
 const list = async (req, res) => {
   try {
     const { Movements } = models;
-    const { type, date, user, place, description, comition } = req.query;
+    const { type, cashbox, user, place, description, comition } = req.query;
     const content = await Movements.findAll(
       {
       where: {
         status: 1,
-        date: date,
+        id_cashbox: cashbox,
         ...(type && { type }),
         ...(description && { description }),
         ...(comition && { commition })

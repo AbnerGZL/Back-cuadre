@@ -2,8 +2,8 @@ import { where } from "sequelize";
 import bcrypt from "bcryptjs";
 import { models } from "../models/index.js";
 /**
- * This object contains controller functions for managing movements operations.
- * @module controllers/movement.controller.js
+ * This object contains controller functions for managing cashbox operations.
+ * @module controllers/cashbox.controller.js
  * @requires models - Models for database interaction.
  * @requires express - Express framework for handling HTTP requests and responses.
  */
@@ -27,12 +27,13 @@ const list = async (req, res) => {
 const getOne = async (req, res) => {
   try {
     const { Cashbox } = models;
-    const { date, value, id } = req.query;
+    const { date, id, state } = req.query;
     const content = await Cashbox.findAll({
       where: {
+        status: 1,
+        date: date,
         ...(id && { id_cashbox: id }),
-        ...(date && { date }),
-        ...(value && { value })
+        ...(state && { state })
       }
     });
 
@@ -52,12 +53,15 @@ const create = async (req, res) => {
     const { Cashbox } = models;
     const body = {
         id_place: req.body.id_place,
-        status: req.body.status,
-        date: req.body.date,
-        value: req.body.value,
-        quantity: req.body.quantity
+        date: new Date().toISOString().split('T')[0],
+        state: "OPEN",
+        status: 1
     }
     const content = await Cashbox.create(body);
+
+    if (!content) {
+      return res.json({ message: "Error creating cashbox" });
+    }
 
     res.json(content);
   } catch (error) {
@@ -76,11 +80,8 @@ const edit = async (req, res) => {
       return res.json({ message: "Not found cashbox" });
     }
     const body = {
-        id_place: req.body.id_place,
-        status: req.body.status,
         date: req.body.date,
-        value: req.body.value,
-        quantity: req.body.quantity
+        state: req.body.state
     }
     const content = await Cashbox.update(body, {
       where: { id_cashbox: id }
@@ -101,7 +102,9 @@ const deleteCashbox = async (req, res) => {
   try {
     const { Cashbox } = models;
     const { id } = req.params;
-    const content = await Cashbox.destroy({
+    const content = await Cashbox.update({
+      status: 0
+    }, {
       where: { id_cashbox: id }
     });
     res.json(content);

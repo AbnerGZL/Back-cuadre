@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 
 import movementsRoutes from './routes/movements.routes.js';
 import cashboxRoutes from './routes/cashbox.routes.js';
+import accountingRoutes from './routes/accounting.routes.js';
 // import profesorApiRoutes from './routes/profesor.routes.js';
 // import { verificarApiKey } from './middleware/authorization.js';
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.json());
 
 app.use('/api/movements', movementsRoutes);
 app.use('/api/cashbox', cashboxRoutes);
+app.use('/api/accounting', accountingRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet());
