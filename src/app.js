@@ -9,13 +9,12 @@ import cashboxRoutes from './routes/cashbox.routes.js';
 import accountingRoutes from './routes/accounting.routes.js';
 import agentsRoutes from './routes/agents.routes.js';
 import descriptionsRoutes from './routes/descriptions.routes.js';
-// import profesorApiRoutes from './routes/profesor.routes.js';
 // import { verificarApiKey } from './middleware/authorization.js';
 const app = express();
 
 // app.use(cookieParser());
 app.use(cors({
-  origin: ['*'],
+  origin: ['http://localhost:2000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
