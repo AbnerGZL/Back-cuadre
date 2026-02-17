@@ -14,13 +14,13 @@ import descriptionsRoutes from './routes/descriptions.routes.js';
 const app = express();
 
 // app.use(cookieParser());
-// app.use(cors({
-//   origin: ['http://localhost:3000',"https://sistema-alumno-front.onrender.com","https://sistema-alumno-production.up.railway.app"],
-//   credentials: true,
-//   methods: ['GET', 'POST'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   domain: '.onrender.com'
-// }));
+app.use(cors({
+  origin: ['http://localhost:2000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  domain: '.onrender.com'
+}));
 // app.use(verificarApiKey);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
