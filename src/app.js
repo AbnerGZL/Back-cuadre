@@ -2,7 +2,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import express from 'express';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
+// import cookieParser from 'cookie-parser';
 
 import movementsRoutes from './routes/movements.routes.js';
 import cashboxRoutes from './routes/cashbox.routes.js';
