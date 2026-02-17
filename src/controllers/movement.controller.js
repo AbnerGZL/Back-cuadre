@@ -20,7 +20,7 @@ const list = async (req, res) => {
         ...(type && { type }),
         ...(description && { description }),
         ...(comition && { commition })
-      },        
+      },
         include: [
           {
             model: models.MovementData,
@@ -30,14 +30,6 @@ const list = async (req, res) => {
             include: [
               {
                 model: models.Users,
-                field: ["name"]
-              },
-              {
-                model: models.Place,
-                field: ["nameplace"]
-              },
-              {
-                model: models.Agents,
                 field: ["name"]
               }
             ]
@@ -67,14 +59,6 @@ const getForId = async (req, res) => {
           include: [
             {
               model: models.Users,
-              field: ["name"]
-            },
-            {
-              model: models.Place,
-              field: ["nameplace"]
-            },
-            {
-              model: models.Agents,
               field: ["name"]
             }
           ]
@@ -121,8 +105,6 @@ const create = async (req, res) => {
     const bodyData = {
         id_user: req.body.id_user,
         id_movement: content.id_movement,
-        id_agents: req.body.id_agents,
-        id_place: req.body.id_place,
         status: 1
     }        
     const contentData = await MovementData.create(bodyData);
@@ -155,7 +137,6 @@ const edit = async (req, res) => {
 
     const bodyData = {
         id_user: req.body.id_user,
-        id_agents: req.body.id_agents,
         status: 1,
     }        
     await MovementData.update(bodyData, {

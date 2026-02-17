@@ -5,7 +5,6 @@ import defineMovements from './movements.js';
 import defineEmployees from './employees.js';
 import defineRoles from './roles.js';
 import defineUsers from './users.js';
-import defineAgents from './agents.js';
 import definePlace from './place.js';
 import defineCashbox from './cashbox.js';
 import defineAccounting from './accounting.js';
@@ -18,7 +17,6 @@ const models = {
   Roles: defineRoles(sequelize, DataTypes),
   Employees: defineEmployees(sequelize, DataTypes),
   Users: defineUsers(sequelize, DataTypes),
-  Agents: defineAgents(sequelize, DataTypes),
   Place: definePlace(sequelize, DataTypes),
   Cashbox: defineCashbox(sequelize, DataTypes),
   MovementData: defineMovementData(sequelize, DataTypes),
@@ -46,9 +44,6 @@ models.Accounting.belongsTo(models.Cashbox, { foreignKey: 'id_cashbox' });
 
 models.Cashbox.hasMany(models.Movements, { foreignKey: 'id_cashbox' });
 models.Movements.belongsTo(models.Cashbox, { foreignKey: 'id_cashbox' });
-
-models.Agents.hasMany(models.MovementData, { foreignKey: 'id_agents' });
-models.MovementData.belongsTo(models.Agents, { foreignKey: 'id_agents' });
 
 models.Movements.hasOne(models.MovementData, { foreignKey: 'id_movement' });
 models.MovementData.belongsTo(models.Movements, { foreignKey: 'id_movement' });
