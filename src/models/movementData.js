@@ -13,10 +13,6 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    id_agents: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     id_place: {
       type: DataTypes.INTEGER,
       allowNull: false,
