@@ -33,8 +33,8 @@ Object.values(models).forEach(model => {
 models.Roles.hasMany(models.Users, { foreignKey: 'id_role' });
 models.Users.belongsTo(models.Roles, { foreignKey: 'id_role' });
 
-models.Employees.hasOne(models.Users, { foreignKey: 'id_user' });
-models.Users.belongsTo(models.Employees, { foreignKey: 'id_user' });
+models.Employees.hasOne(models.Users, { foreignKey: 'id_employee' });
+models.Users.belongsTo(models.Employees, { foreignKey: 'id_employee' });
 
 models.Place.hasMany(models.Cashbox, { foreignKey: 'id_place' });
 models.Cashbox.belongsTo(models.Place, { foreignKey: 'id_place' });
