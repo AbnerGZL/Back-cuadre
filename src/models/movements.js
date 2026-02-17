@@ -5,6 +5,11 @@ export default (sequelize, DataTypes) => {
       primaryKey: true, 
       autoIncrement: true
     },
+    id_cashbox: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+    },    
     // type: "ENTRY" | "EXIT"
     type: {
       type: DataTypes.ENUM('ENTRY', 'EXIT'),
