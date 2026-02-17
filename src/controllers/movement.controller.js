@@ -12,6 +12,11 @@ const list = async (req, res) => {
   try {
     const { Movements } = models;
     const { type, cashbox, user, description, comition } = req.query;
+
+    if (!cashbox) {
+      return res.status(400).json({ message: "cashbox is required" });
+    }
+
     const content = await Movements.findAll(
       {
       where: {
