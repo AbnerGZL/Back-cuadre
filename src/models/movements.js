@@ -7,7 +7,6 @@ export default (sequelize, DataTypes) => {
     },
     id_cashbox: {
       type: DataTypes.INTEGER,
-      autoIncrement: true,
       allowNull: false,
     },    
     // type: "ENTRY" | "EXIT"
