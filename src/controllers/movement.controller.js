@@ -24,7 +24,7 @@ const list = async (req, res) => {
         id_cashbox: cashbox,
         ...(type && { type }),
         ...(description && { description }),
-        ...(comition && { commition })
+        ...(comition && { comition })
       },
         include: [
           {
@@ -38,7 +38,10 @@ const list = async (req, res) => {
                 field: ["name"]
               }
             ]
-        }]
+        }],
+        order: [
+          ['date', 'DESC']
+        ]
       }
     );
 
@@ -83,38 +86,42 @@ const getForId = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { Movements } = models;
-    const { MovementData } = models;
-    const { id_cashbox } = req.body;
+    const { Movements, MovementData, Users } = models;
+    const { id_cashbox, id_user, type, quantity, description, comition, date } = req.body;
 
-    if (!id_cashbox) {
-      return res.status(400).json({ message: "id_cashbox is required" });
-    }
+    if (!id_cashbox) return res.status(400).json({ message: "id_cashbox is required" });
 
     const cashbox = await models.Cashbox.findByPk(id_cashbox);
-    if (cashbox.state == "CLOSED") {
-      return res.status(404).json({ message: "Cashbox is closed" });
-    }
+    if (cashbox.state === "CLOSED") return res.status(404).json({ message: "Cashbox is closed" });
 
-    const bodyMovement = {
-        id_cashbox: id_cashbox,
-        type: req.body.type,
-        quantity: req.body.quantity,
-        description: req.body.description,
-        commition: req.body.commition,
-        date: req.body.date,
-        status: 1
-    }
-    const content = await Movements.create(bodyMovement);
+    const content = await Movements.create({
+      id_cashbox,
+      type,
+      quantity,
+      description,
+      comition,
+      date,
+      status: 1
+    });
 
-    const bodyData = {
-        id_user: req.body.id_user,
-        id_movement: content.id_movement,
-        status: 1
-    }        
-    const contentData = await MovementData.create(bodyData);
+    const contentData = await MovementData.create({
+      id_user,
+      id_movement: content.id_movement,
+      status: 1
+    });
 
-    res.json({ movement: content, data: contentData });
+    const movementWithUser = await Movements.findByPk(content.id_movement, {
+      include: [
+        {
+          model: MovementData,
+          include: [
+            { model: Users, attributes: ["name"] }
+          ]
+        }
+      ]
+    });
+
+    res.json(movementWithUser);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -123,40 +130,35 @@ const create = async (req, res) => {
 
 const edit = async (req, res) => {
   try {
-    const { Movements, MovementData } = models;
+    const { Movements, MovementData, Users } = models;
     const { id } = req.params;
-    
-    const id_movement = await Movements.findByPk(id);
-    if (!id_movement) {
-      return res.status(404).json({ message: "Movement not found" });
-    }
+    const { id_user, type, quantity, description, comition, date } = req.body;
 
-    const body = {
-        type: req.body.type,
-        quantity: req.body.quantity,
-        description: req.body.description,
-        commition: req.body.commition,
-        date: req.body.date,
-        status: 1
-    }
+    const movement = await Movements.findByPk(id);
+    if (!movement) return res.status(404).json({ message: "Movement not found" });
 
-    const bodyData = {
-        id_user: req.body.id_user,
-        status: 1,
-    }        
-    await MovementData.update(bodyData, {
-      where: { id_movement: id }
-    });
-    await Movements.update(body, {
-      where: { id_movement: id }
-    });
-    const movement = await Movements.findByPk(id, {
+    await Movements.update(
+      { type, quantity, description, comition, date, status: 1 },
+      { where: { id_movement: id } }
+    );
+
+    await MovementData.update(
+      { id_user, status: 1 },
+      { where: { id_movement: id } }
+    );
+
+    const movementWithUser = await Movements.findByPk(id, {
       include: [
         {
-          model: models.MovementData,
-      }]
+          model: MovementData,
+          include: [
+            { model: Users, attributes: ["name"] }
+          ]
+        }
+      ]
     });
-    res.json(movement);
+
+    res.json(movementWithUser);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

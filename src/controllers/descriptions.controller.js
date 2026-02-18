@@ -12,12 +12,12 @@ import { text } from "express";
 const list = async (req, res) => {
   try {
     const { Descriptions } = models;
-    const { cashbox } = req.query;
-    const content = await Descriptions.findAll();
+    const { place } = req.query;
 
-    if (!content || content.length === 0) {
-      return res.json({ message: "Not found descriptions" });
-    }
+    const content = await Descriptions.findAll({
+      where: place ? { id_place: place } : undefined,
+      order: [["text", "ASC"]],
+    });
 
     res.json(content);
   } catch (error) {
@@ -51,15 +51,15 @@ const getOne = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { Descriptions } = models;
-    const body= {
-        id_place: req.body.id_place,
-        text: req.body.text,
-        link: 0
+    const body = {
+      id_place: req.body.id_place,
+      text: req.body.text,
+      link: 0
     }
     const content = await Descriptions.create(body);
 
     if (!content) {
-        return res.json({ message: "Error creating description" });
+      return res.json({ message: "Error creating description" });
     }
 
     res.json(content);
@@ -73,7 +73,7 @@ const edit = async (req, res) => {
   try {
     const { Descriptions } = models;
     const { id } = req.params;
-    
+
     const id_description = await Descriptions.findByPk(id);
     if (!id_description) {
       return res.status(404).json({ message: "description not found" });
@@ -96,13 +96,25 @@ const edit = async (req, res) => {
   }
 };
 
-const deleteDescription= async (req, res) => {
+const deleteDescription = async (req, res) => {
   try {
     const { Descriptions } = models;
     const { id } = req.params;
-    await Descriptions.destroy({
-      where: { id_description: id }
-    });
+
+    const tag = await Descriptions.findByPk(id);
+
+    if (!tag) {
+      return res.status(404).json({ message: "Description not found" });
+    }
+
+    if (tag.link > 0) {
+      return res.status(400).json({
+        message: "Cannot delete tag because it is already used in movements",
+      });
+    }
+
+    await tag.destroy();
+
     res.json({ message: "Description deleted" });
   } catch (error) {
     console.error(error);

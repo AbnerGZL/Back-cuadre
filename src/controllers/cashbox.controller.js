@@ -27,13 +27,14 @@ const list = async (req, res) => {
 const getOne = async (req, res) => {
   try {
     const { Cashbox } = models;
-    const { date, id, state } = req.query;
+    const { date, id, state, id_place } = req.query;
     const content = await Cashbox.findOne({
       where: {
         status: 1,
         date: date,
         ...(id && { id_cashbox: id }),
-        ...(state && { state })
+        ...(state && { state }),
+        ...(id_place && { id_place }),
       }
     });
 
@@ -51,11 +52,18 @@ const getOne = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { Cashbox } = models;
+    const today = new Date();
+    const localDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
     const body = {
-        id_place: req.body.id_place,
-        date: new Date().toISOString().split('T')[0],
-        state: "OPEN",
-        status: 1
+      id_place: req.body.id_place,
+      date: localDate,
+      state: "OPEN",
+      status: 1
     }
     const content = await Cashbox.create(body);
 
@@ -75,26 +83,24 @@ const edit = async (req, res) => {
     const { Cashbox } = models;
     const { id } = req.params;
 
-    const existingCashbox = await Cashbox.findByPk(id);
-    if (!existingCashbox) {
-      return res.json({ message: "Not found cashbox" });
-    }
-    const body = {
-        date: req.body.date,
-        state: req.body.state
-    }
-    const content = await Cashbox.update(body, {
+    const cashbox = await Cashbox.findOne({
       where: { id_cashbox: id }
     });
-    if (content[0] === 0) {
-      return res.json({ message: "No changes made to cashbox" });
+
+    if (!cashbox) {
+      return res.status(404).json({ message: "Cashbox not found" });
     }
 
-    const cashbox = await Cashbox.findByPk(id);
-    res.json(cashbox);
+    await cashbox.update({
+      date: req.body.date ?? cashbox.date,
+      state: req.body.state ?? cashbox.state
+    });
+
+    return res.json(cashbox);
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 

@@ -100,7 +100,7 @@ const edit = async (req, res) => {
     }
 
     await Accounting.update(body, {
-      where: { id_movement: id }
+      where: { id_accounting: id }
     });
 
     const movement = await Accounting.findByPk(id);

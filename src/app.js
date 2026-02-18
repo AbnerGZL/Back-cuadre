@@ -24,6 +24,29 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log("======================================================================================");
+  console.log("📥 REQUEST");
+  console.log("Method:", req.method);
+  console.log("URL:", req.originalUrl);
+  console.log("Body:", req.body);
+  console.log("Params:", req.params);
+  console.log("Query:", req.query);
+
+  const oldSend = res.send;
+
+  res.send = function (data) {
+    console.log("↗️ RESPONSE");
+    console.log("Status:", res.statusCode);
+    console.log("Body:", data);
+
+    return oldSend.apply(res, arguments);
+  };
+
+  next();
+});
+
+
 app.use('/api/movements', movementsRoutes);
 app.use('/api/cashbox', cashboxRoutes);
 app.use('/api/accounting', accountingRoutes);
